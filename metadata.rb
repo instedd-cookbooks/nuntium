@@ -1,0 +1,12 @@
+name             'nuntium'
+maintainer       'Juan Wajnerman'
+maintainer_email 'jwajnerman@manas.com.ar'
+license          'All rights reserved'
+description      'Installs/Configures nuntium'
+long_description 'Installs/Configures nuntium'
+version          '0.1.0'
+
+depends 'application_ruby'
+depends 'rbenv'
+depends 'mysql'
+depends 'database'
