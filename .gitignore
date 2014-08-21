@@ -1,5 +1,6 @@
 .vagrant
 .bundle
+berks-cookbooks
 
 .kitchen/
 .kitchen.local.yml
