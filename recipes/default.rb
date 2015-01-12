@@ -1,8 +1,11 @@
 package "git"
+package "nodejs"
+package "memcached"
 
 # Install rbenv and ruby
 include_recipe "rbenv::default"
 include_recipe "rbenv::ruby_build"
+include_recipe "instedd-common::passenger"
 
 rbenv_ruby "1.9.3-p484"
 rbenv_gem "bundler" do
@@ -15,51 +18,43 @@ include_recipe "mysql::client"
 include_recipe "database::mysql"
 
 mysql_connection = {
-  host: 'localhost',
-  username: 'root',
-  password: node['mysql']['server_root_password']
+  host: node['mysql']['server_host'],
+  username: node['mysql']['admin_username'] || 'root',
+  password: node['mysql']['admin_password'] || node['mysql']['server_root_password']
 }
 
 mysql_database "nuntium" do
   connection mysql_connection
 end
 
-include_recipe "nodejs"
+# Install RabbitMQ
+include_recipe "rabbitmq"
+include_recipe "rabbitmq::mgmt_console"
 
-application "nuntium" do
-  path "/u/apps/nuntium"
-  repository "https://bitbucket.org/instedd/nuntium.git"
-
-  rails do
-    bundler true
-    bundle_command "#{node[:rbenv][:root_path]}/shims/bundle"
-
-    database(
-      database: "nuntium",
-      adapter: "mysql2",
-      username: "root",
-      password: node['mysql']['server_root_password']
-    )
-  end
-
-  before_symlink do
-    rbenv_execute "create database" do
-      command "bundle exec rake db:migrate"
-      environment "RAILS_ENV" => "production"
-      cwd release_path
-    end
-  end
-
-  before_restart do
-    file "#{release_path}/.env" do
-      content "RAILS_ENV=production"
-    end
-
-    rbenv_execute "foreman export" do
-      command "bundle exec foreman export -a nuntium -u root -c 'worker_fast=1,worker_slow=1,xmpp=1,smpp=1,msn=1,cron=1,sched=1' upstart /etc/init"
-      cwd release_path
-    end
-  end
+rabbitmq_vhost node['nuntium']['amqp']['vhost'] do
+  action :add
 end
 
+rabbitmq_user node['nuntium']['amqp']['user'] do
+  password node['nuntium']['amqp']['password']
+  action :add
+end
+
+rabbitmq_user node['nuntium']['amqp']['user'] do
+  vhost node['nuntium']['amqp']['vhost']
+  permissions ".* .* .*"
+  action :set_permissions
+end
+
+rails_web_app "nuntium" do
+  app_dir "/u/apps/nuntium"
+  app_owner node['current_user']
+  server_name node['nuntium']['host_name']
+  config_files %w(amqp.yml database.yml google_oauth2.yml guisso.yml settings.yml twitter_oauth_consumer.yml)
+  passenger_spawn_method :direct
+  ssl node['nuntium']['web']['ssl']['enabled']
+  ssl_cert_file node['nuntium']['web']['ssl']['cert_file']
+  ssl_cert_key_file node['nuntium']['web']['ssl']['cert_key_file']
+  ssl_cert_chain_file node['nuntium']['web']['ssl']['cert_chain_file']
+end
 

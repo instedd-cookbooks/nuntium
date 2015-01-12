@@ -1,0 +1,10 @@
+production:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: true
+  database: nuntium
+  pool: 5
+  host: <%= node['mysql']['server_host'] %>
+  username: <%= node['mysql']['admin_username'] || 'root' %>
+  password: <%= node['mysql']['admin_password'] || node['mysql']['server_root_password'] %>
+

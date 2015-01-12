@@ -1,0 +1,6 @@
+defaults: &defaults
+  protocol: <%= node['nuntium']['web']['ssl']['enabled'] ? 'https' : 'http' %>
+  host_name: <%= node['nuntium']['host_name'] %>
+
+production:
+  <<: *defaults

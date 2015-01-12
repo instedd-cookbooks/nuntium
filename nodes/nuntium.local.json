@@ -1,0 +1,12 @@
+{
+  "run_list": [
+    "postfix::server",
+    "nuntium::default"
+  ],
+  "automatic": {
+    "ipaddress": "nuntium.local"
+  },
+  "nuntium": {
+    "host_name": "nuntium.local"
+  }
+}
