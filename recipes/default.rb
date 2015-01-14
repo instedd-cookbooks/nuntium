@@ -48,7 +48,7 @@ end
 
 rails_web_app "nuntium" do
   app_dir "/u/apps/nuntium"
-  app_owner node['current_user']
+  owner node['current_user']
   server_name node['nuntium']['host_name']
   config_files %w(amqp.yml database.yml google_oauth2.yml guisso.yml settings.yml twitter_oauth_consumer.yml)
   passenger_spawn_method :direct
