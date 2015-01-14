@@ -61,5 +61,6 @@ end
 newrelic_yml "/u/apps/nuntium/shared/newrelic.yml" do
   agent_type 'ruby'
   app_name node['nuntium']['newrelic']['app_name']
+  license node['newrelic']['license']
 end
 
