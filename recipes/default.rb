@@ -58,3 +58,8 @@ rails_web_app "nuntium" do
   ssl_cert_chain_file node['nuntium']['web']['ssl']['cert_chain_file']
 end
 
+newrelic_yml "/u/apps/nuntium/shared/newrelic.yml" do
+  agent_type 'ruby'
+  app_name node['nuntium']['newrelic']['app_name']
+end
+

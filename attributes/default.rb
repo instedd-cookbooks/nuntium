@@ -1,6 +1,8 @@
 default['nuntium']['host_name'] = node['fqdn']
 default['nuntium']['email_sender'] = 'nuntium@instedd.org'
 
+default['nuntium']['newrelic']['app_name'] = 'Nuntium'
+
 default['nuntium']['amqp']['vhost'] = '/nuntium'
 default['nuntium']['amqp']['user'] = 'nuntium'
 default['nuntium']['amqp']['password'] = 'nuntium'
