@@ -1,6 +1,7 @@
 defaults: &defaults
   protocol: <%= node['nuntium']['web']['ssl']['enabled'] ? 'https' : 'http' %>
   host_name: <%= node['nuntium']['host_name'] %>
+  email_sender: <%= node['nuntium']['email_sender'] %>
 
 production:
   <<: *defaults
